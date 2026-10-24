@@ -30,7 +30,28 @@
 
 ## 安装
 
-前提：DSH（DeepSeek Harness）桌面版 ≥ 0.2.x，Python 3.8+（仅标准库，无需 pip 装包）。
+前提：DSH（DeepSeek Harness）桌面版 ≥ 0.2.x。
+
+### 方式一：官方形态（推荐，会出现在 DSH 的插件设置里）
+
+DSH 的桌面 profile 由 Electron 应用独占管理（`dsh plugin` CLI 会拒绝 `--profile desktop`），
+正规做法是把插件注册为 profile 工作区的 pnpm 依赖（`link:` 软链，源码目录即生效）：
+
+```powershell
+cd ~/.dsh/profiles/desktop
+pnpm add link:D:/dsh-status-color   # 目录按你的检出位置调整
+```
+
+这样插件进入 `package.json` 依赖与 lockfile，属于插件清单视角的正规插件；
+配合仓库自带的 `cordis.patch.yml`（`dsh.bundle.patch` 自注册行）激活。
+卸载：`pnpm remove dsh-status-color`，再删除 cordis.patch.yml 里的注册行。
+
+> 系统没有 pnpm 也可以用 DSH 自带的：`<DSH安装目录>\resources\runtime\primary-runtime\dependencies\node\bin\node.exe`
+> `<DSH安装目录>\resources\runtime\primary-runtime\dependencies\pnpm\bin\pnpm.cjs` add link:…
+
+### 方式二：install.py（手动，功能完全一样，但不在插件设置列表中显示）
+
+需要 Python 3.8+（仅标准库）。
 
 ```powershell
 # 在仓库目录执行
@@ -39,7 +60,7 @@ python install.py status      # 查看状态
 python install.py uninstall   # 卸载
 ```
 
-`install` 做三件事：
+`install` 做三件事（方式二；检测到方式一的 link: 安装时自动跳过复制）：
 
 1. 把插件复制到 `~/.dsh/profiles/desktop/node_modules/dsh-status-color`；
 2. 在 `~/.dsh/profiles/desktop/cordis.patch.yml` 末尾注册一段带标记的 bundle 行（`# DSH-STATUS-COLOR-BEGIN … # DSH-STATUS-COLOR-END`）；
@@ -51,9 +72,9 @@ python install.py uninstall   # 卸载
 > node_modules 副本，避免重复上色；旧版源码目录 `~/.dsh/dsh-tok-color/` 不会被删除，
 > 不需要可自行清理。
 
-> **注意**：本插件是手动安装进 profile 工作区的（未写入 profile 的 package.json 依赖）。
-> 如果将来通过插件市场 / 插件管理器执行 pnpm 安装导致 `node_modules` 被整理，
-> 重新跑一次 `python install.py install` 即可恢复。
+> **注意**：方式一手动安装的插件未写入 profile 的 `package.json` 依赖——如果将来通过
+> 插件市场 / 插件管理器执行 pnpm 安装导致 `node_modules` 被整理，重新跑一次
+> `python install.py install` 即可恢复（方式二的 link: 依赖不受影响）。
 
 ## 配置
 

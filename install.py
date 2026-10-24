@@ -18,6 +18,7 @@ DSH 通过 HMR 监听 cordis.patch.yml，通常无需重启即生效；否则重
 避免两个插件重复上色。
 """
 import argparse
+import os
 import shutil
 import sys
 from os.path import expanduser
@@ -69,6 +70,11 @@ def data_dir():
 
 def installed_copy(profile):
     return profile / "node_modules" / PKG_NAME
+
+
+def is_link(path):
+    """symlink 或 Windows junction（pnpm add link: 的产物）都不算普通目录。"""
+    return os.path.islink(path) or os.path.isjunction(path)
 
 
 def patch_path(profile):
@@ -131,11 +137,17 @@ def cmd_install(profile):
         print(f"[x] profile 目录不存在：{profile}")
         return 2
     dest = installed_copy(profile)
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    if dest.exists():
-        shutil.rmtree(dest)
-    shutil.copytree(SRC, dest, ignore=IGNORED)
-    print(f"[+] 已复制插件到 {dest}")
+    if os.path.lexists(dest):
+        if is_link(dest):
+            print(f"[=] 检测到 link: 安装（{dest} → {os.path.realpath(dest)}），跳过复制，源码目录即生效")
+        else:
+            shutil.rmtree(dest)
+            shutil.copytree(SRC, dest, ignore=IGNORED)
+            print(f"[+] 已复制插件到 {dest}")
+    else:
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(SRC, dest, ignore=IGNORED)
+        print(f"[+] 已复制插件到 {dest}")
 
     for note in migrate_old_plugin(profile):
         print(f"[~] 迁移：{note}")
@@ -167,9 +179,13 @@ def cmd_uninstall(profile):
         print(f"[-] 已从 {p} 移除注册行")
         changed = True
     dest = installed_copy(profile)
-    if dest.exists():
-        shutil.rmtree(dest)
-        print(f"[-] 已删除 {dest}")
+    if os.path.lexists(dest):
+        if is_link(dest):
+            os.rmdir(dest)  # 只移除链接本身，源码目录不受影响
+            print(f"[-] 已移除 link: {dest}（源码目录不受影响；如为 pnpm link: 安装，建议再执行 pnpm remove {PKG_NAME} 清理依赖声明）")
+        else:
+            shutil.rmtree(dest)
+            print(f"[-] 已删除 {dest}")
         changed = True
     if not changed:
         print("[=] 未发现已安装内容")
