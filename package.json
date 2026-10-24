@@ -1,6 +1,6 @@
 {
   "name": "dsh-status-color",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Colorizes the composer status pills in DeepSeek Harness: tok/s speed and cache-hit rate, with fully configurable thresholds and colors.",
   "keywords": [
     "deepseek",
@@ -15,6 +15,9 @@
   "license": "MIT",
   "type": "module",
   "main": "lib/index.js",
+  "dependencies": {
+    "@deepseek-ai/schemastery": "^3.18.4"
+  },
   "exports": {
     ".": "./lib/index.js",
     "./client": "./lib/client.js",

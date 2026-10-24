@@ -5,7 +5,9 @@
 - **tok/s 生成速度**（📊 activity pill）：速度越快越绿，慢了变红；
 - **缓存命中率**（🗄 usage pill，「缓存命中 X%」）：命中率越高越绿。
 
-阈值、颜色、加粗、开关、刷新间隔**全部可配置**，改一个 JSON 文件即可，保存后约 5 秒内自动生效，无需重启 DSH。
+阈值、颜色、加粗、开关、刷新间隔**全部可配置**：可以直接在 DSH 的插件设置里改（自动生成表单），也可以改配置文件；保存后约 5 秒内自动生效，无需重启 DSH。
+
+> 本插件由 GLM-5.3-Flash（Z.ai）编写：需求提出、验收与调校由人完成。
 
 ## 效果
 
@@ -30,55 +32,68 @@
 
 ## 安装
 
-前提：DSH（DeepSeek Harness）桌面版 ≥ 0.2.x。
+前提：DSH（DeepSeek Harness）桌面版 ≥ 0.2.x。以下命令都在 profile 工作区
+`~/.dsh/profiles/desktop` 里执行；系统没有 pnpm 时，可用 DSH 自带的一份（见文末小贴士）。
 
-### 方式一：官方形态（推荐，会出现在 DSH 的插件设置里）
-
-DSH 的桌面 profile 由 Electron 应用独占管理（`dsh plugin` CLI 会拒绝 `--profile desktop`），
-正规做法是把插件注册为 profile 工作区的 pnpm 依赖（`link:` 软链，源码目录即生效）：
+### 从 GitHub 安装
 
 ```powershell
 cd ~/.dsh/profiles/desktop
-pnpm add link:D:/dsh-status-color   # 目录按你的检出位置调整
+pnpm add github:DoraJasmine/dsh-status-color
 ```
 
-这样插件进入 `package.json` 依赖与 lockfile，属于插件清单视角的正规插件；
-配合仓库自带的 `cordis.patch.yml`（`dsh.bundle.patch` 自注册行）激活。
-卸载：`pnpm remove dsh-status-color`，再删除 cordis.patch.yml 里的注册行。
+然后在 `~/.dsh/profiles/desktop/cordis.patch.yml` 末尾加入激活行：
 
-> 系统没有 pnpm 也可以用 DSH 自带的：`<DSH安装目录>\resources\runtime\primary-runtime\dependencies\node\bin\node.exe`
-> `<DSH安装目录>\resources\runtime\primary-runtime\dependencies\pnpm\bin\pnpm.cjs` add link:…
+```yaml
+- insert:
+    - id: status-color
+      name: 'dsh-status-color'
+```
 
-### 方式二：install.py（手动，功能完全一样，但不在插件设置列表中显示）
+重启 DSH（或等待 HMR 热加载）即可生效。
 
-需要 Python 3.8+（仅标准库）。
+### 从 npm 安装（发布后可用）
 
 ```powershell
-# 在仓库目录执行
-python install.py install     # 安装
-python install.py status      # 查看状态
-python install.py uninstall   # 卸载
+cd ~/.dsh/profiles/desktop
+pnpm add dsh-status-color
 ```
 
-`install` 做三件事（方式二；检测到方式一的 link: 安装时自动跳过复制）：
+激活行同上。
 
-1. 把插件复制到 `~/.dsh/profiles/desktop/node_modules/dsh-status-color`；
-2. 在 `~/.dsh/profiles/desktop/cordis.patch.yml` 末尾注册一段带标记的 bundle 行（`# DSH-STATUS-COLOR-BEGIN … # DSH-STATUS-COLOR-END`）；
-3. 把 `config.example.json` 复制为 `~/.dsh/dsh-status-color/config.json`（已存在则不动）。
+### 本地开发（检出源码）
 
-运行中的 DSH 通过 HMR 监听 `cordis.patch.yml`，通常即时生效；若没生效，**重启一次 DSH**。之后到设置里确认输入框下方统计条已经带颜色。
+```powershell
+git clone https://github.com/DoraJasmine/dsh-status-color.git
+cd ~/.dsh/profiles/desktop
+pnpm add link:<clone 目录>
+```
 
-> **从旧版 dsh-tok-color 迁移**：`install` 会自动移除旧版 `dsh-tok-color` 的注册行与
-> node_modules 副本，避免重复上色；旧版源码目录 `~/.dsh/dsh-tok-color/` 不会被删除，
-> 不需要可自行清理。
+以 `link:` 软链安装后源码目录即生效，改完代码无需重装。卸载一律
+`pnpm remove dsh-status-color` 并删除 cordis.patch.yml 里的激活行。
 
-> **注意**：方式一手动安装的插件未写入 profile 的 `package.json` 依赖——如果将来通过
-> 插件市场 / 插件管理器执行 pnpm 安装导致 `node_modules` 被整理，重新跑一次
-> `python install.py install` 即可恢复（方式二的 link: 依赖不受影响）。
+> **小贴士**：DSH 自带 node + pnpm，可代替系统安装：
+> `<DSH 安装目录>\resources\runtime\primary-runtime\dependencies\node\bin\node.exe`
+> `<DSH 安装目录>\resources\runtime\primary-runtime\dependencies\pnpm\bin\pnpm.cjs`
+> （桌面 profile 由 Electron 应用独占管理，`dsh plugin` CLI 不能操作 `--profile desktop`，所以用 pnpm 直接管理。）
 
-## 配置
+## 在 DSH 设置中配置（推荐）
 
-配置文件：`~/.dsh/dsh-status-color/config.json`（尊重 `DSH_HOME` 环境变量）。
+插件安装后在 DSH 的 **设置 → 插件** 中有一张配置卡片（由插件导出的 Config schema 自动生成）：
+
+- **速度 / 缓存命中率** 各自独立配置：
+  - `enabled`：开关，关闭后自动还原为无色；
+  - `bands`：分档列表，可增删档位；每档 `min` 阈值（含）、`color` 颜色、`bold` 加粗；
+  - `fallback`：所有档都不命中时的兜底样式。
+- `refreshMs`：配置热更新轮询间隔（1000–60000ms，默认 5000）。
+
+**颜色**填任意 CSS 颜色：`#3ecf8e`、`#f5b944`、`red`、`orange`、`rgb(255,107,87)` 都可以；
+写错时该字段回退内置默认色。修改保存后，客户端在 `refreshMs`（默认 5 秒）内自动应用，无需重启 DSH。
+
+## 配置文件（兜底）
+
+也可以用文件配置：`~/.dsh/dsh-status-color/config.json`（尊重 `DSH_HOME` 环境变量）。
+**在设置页里配置过的项以设置页（行配置）为准**，文件只对未在设置页配置的部分生效。
 
 ```jsonc
 {
@@ -103,24 +118,16 @@ python install.py uninstall   # 卸载
 }
 ```
 
-字段说明：
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `refreshMs` | number | 配置热更新轮询间隔，范围 1000–60000，默认 5000 |
-| `<指标>.enabled` | boolean | `false` 关闭该指标上色（自动还原） |
-| `<指标>.bands` | array | 分档列表；`min` 阈值（含）、`color` 颜色（任意 CSS 颜色格式）、`bold` 加粗（`true`=600 / `false` / 数字字重 / 任意 CSS font-weight 字符串）。按 `min` 降序匹配，**取第一个满足 `value >= min` 的档** |
-| `<指标>.fallback` | object | 没有命中任何档时的兜底样式 |
-
-**生效方式**：客户端每隔 `refreshMs` 向宿主拉一次配置，保存文件后最多约 5 秒（默认）自动重涂，不用重启 DSH、不用刷新页面。文件缺失或个别字段写错时，对应字段回退内置默认值，不会炸。
-
-**改分档只想要两档/一档？** 直接删掉 `bands` 里的元素即可，列表长度不限。想要某个指标单色显示，就只留一档 + 一个 fallback。
+`bold`：`true` = 字重 600，`false` = 不加粗，数字/字符串 = 任意 CSS font-weight。
+文件缺失或个别字段写错时，对应字段回退内置默认值，不会炸。仓库里的
+`config.example.json` 是模板，首次以 pnpm 方式安装后可手动复制为 `config.json`。
 
 ## 工作原理
 
-- **宿主半边**（`lib/index.js`，cordis 插件）：通过可选的 `webServer` 服务注册
-  `POST /_dsh/dsh-status-color/getConfig` 路由，把 `config.json` 原文（含 `fileFound`/`error` 状态）
-  返回给客户端。认证走宿主统一的 `connection.requestRejection` 边界。
+- **宿主半边**（`lib/index.js`，cordis 插件）：导出 schemastery 的 `Config` schema 供 DSH
+  自动生成设置页；并通过可选的 `webServer` 服务注册 `POST /_dsh/dsh-status-color/getConfig`
+  路由，把「行配置（设置页，优先）+ config.json（兜底）」合并后的生效配置返回给客户端。
+  认证走宿主统一的 `connection.requestRejection` 边界。
 - **客户端半边**（`lib/client.js`，浏览器端 cordis 模块）：
   1. `MutationObserver` 监听 `[data-composer-stat]` 统计条内的文本变化；
   2. 命中 `tok/s`（速度）或 `缓存命中 X% / Cache hit X%`（缓存命中率）的文本节点，解析数值、按配置分档；
@@ -129,34 +136,42 @@ python install.py uninstall   # 卸载
   4. 指标被关闭时自动拆掉包裹还原；节点被 React 卸载后清理遗留空壳。
 - 宿主端不做任何渲染；客户端找不到统计条时静默待机，失败不影响宿主。
 
+## web 端支持
+
+**支持。** 插件的客户端声明就是 web 平台（`dsh.client.platform: "web"`），桌面端内嵌界面与
+浏览器访问的 DSH web 端共用同一套 client 模块体系；配置 RPC 走宿主 webServer，两端都能用。
+要在 web 端启用：在 web profile（`~/.dsh/profiles/web`，结构与 desktop 相同、互相独立）里按
+上面同样的方式安装并加入激活行即可。
+
 ## 兼容性与已知限制
 
 - 依赖内置统计条的 `data-composer-stat` DOM 标记与「缓存命中 / Cache hit」文案（zh/en 内置语言）。
   未来 DSH 版本若改动，插件会静默无效果（不会报错），改 `lib/client.js` 顶部两个正则即可。
-- 只处理速度与缓存命中率两个读数；本轮 token 用量（`4.2M tok`）保持原样。
-- 手动安装的插件不参与 pnpm 依赖管理，见上文「注意」。
+- 只处理速度与缓存命中率两个读数；本轮 token 用量（`4.3M tok`）保持原样。
 
-## 开发
+## 开发说明
 
-无构建步骤：`lib/*.js` 即源码。目录结构：
+- 本插件由 **GLM-5.3-Flash**（Z.ai）编写：需求提出、验收与调校由人完成。
+- 无构建步骤：`lib/*.js` 即源码。目录结构：
 
 ```
 dsh-status-color/
-├── package.json          # dsh.client 声明（platform: web）+ exports
+├── package.json          # dsh.client 声明（platform: web）+ exports + 依赖
 ├── cordis.patch.yml      # 自注册 bundle 行（id: status-color）
-├── config.example.json   # 配置模板（install 时复制为 config.json）
-├── install.py            # 安装 / 卸载 / 状态
+├── config.example.json   # 配置模板
+├── install.py            # 手动安装辅助脚本（不想用 pnpm 时的替代，功能等同）
 ├── lib/
-│   ├── index.js          # 宿主半边：配置 RPC
+│   ├── index.js          # 宿主半边：Config schema + 配置 RPC
 │   └── client.js         # 客户端半边：MutationObserver 上色
+├── screenshots/          # 效果图
 ├── README.md
 ├── CHANGELOG.md
 └── LICENSE
 ```
 
-改完代码后重跑 `python install.py install`（会覆盖 node_modules 副本），刷新或重启 DSH 生效。
-调试入口：浏览器控制台里 `window.__DSH_STATUS_COLOR__.config` 看当前生效配置，
-`window.__DSH_STATUS_COLOR__.refreshConfig()` 手动拉取。
+改完代码后，`link:` 安装的无需任何操作，刷新或重启 DSH 生效；调试入口：浏览器控制台里
+`window.__DSH_STATUS_COLOR__.config` 看当前生效配置，`window.__DSH_STATUS_COLOR__.refreshConfig()`
+手动拉取。
 
 ## 许可证
 

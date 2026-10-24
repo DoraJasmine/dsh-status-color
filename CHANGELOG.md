@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0 (2026-10-24)
+
+- 新增 DSH 设置页配置：导出 schemastery Config schema，宿主自动生成表单——阈值/颜色/加粗可改、分档可增删、指标可开关、refreshMs 可调；修改后约 5 秒内自动生效。
+- 配置来源合并：设置页行配置优先，config.json 兜底；颜色宽容校验（色号/CSS 颜色名），坏字段回退默认值。
+- 宿主端声明 `@deepseek-ai/schemastery` 依赖（对齐 git-graph 等官方系插件的做法），link: 与 npm 安装形态都能解析。
+- README：安装说明改为 GitHub / npm 官方方式；新增 web 端支持说明与 GLM-5.3-Flash 开发署名。
+
 ## 0.1.1 (2026-10-24)
 
 - 新增官方形态安装方式：`pnpm add link:<目录>` 注册为 profile 依赖，会出现在 DSH 插件设置中；`install.py` 检测到 link: 安装时自动跳过复制、卸载时只移除链接。
