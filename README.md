@@ -9,9 +9,13 @@
 
 ## 效果
 
-![输入框下方状态条上色效果](screenshots/composer-pills.png)
+**tok/s 生成速度**（173 tok/s，命中 ≥70 档显示为绿色）：
 
-上图为输入框下方的状态条：`89 tok/s` 命中 ≥70 档显示为绿色；缓存命中率同理分档上色。
+![tok/s 速度上色](screenshots/speed-pill.png)
+
+**缓存命中率**（91%，命中 ≥80% 档显示为绿色）：
+
+![缓存命中率上色](screenshots/cache-hit-pill.png)
 
 | 指标 | 分档（默认） | 颜色 |
 |---|---|---|
