@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0 (2026-10-24)
+
+- 首个公开发布版本。
+- 移除组件详情页的第二份配置表单，配置统一在插件卡片第一层。
+- 此前版本要点：tok/s 与缓存命中率上色（!important 样式表 + 整元素兜底）、插件卡片配置表单（plugins.bundle.config 槽位）、config.json 热更新、停用自动还原、bundles 标准激活。
+
 ## 0.3.9 (2026-10-24)
 
 - 配置表单同时注册 `plugins.bundle.config`（key = 包名）与 `plugins.row.config`（key = 包名#行id）两个槽位：前者让表单直接出现在插件卡片第一层（对齐 dsh-context 的体验），后者保留在组件详情页。
