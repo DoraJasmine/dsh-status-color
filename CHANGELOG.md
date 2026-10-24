@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.8 (2026-10-24)
+
+- 行 id 从 `status-color` 改为 `dsh-status-color`（与包名一致，对齐 dsh-context 等官方系插件的惯例）：配置表单的命名空间按行 id 注册、插件卡片按包名查找，两者一致后配置表单可直接出现在插件卡片上，无需再点进组件详情。
+
 ## 0.3.7 (2026-10-24)
 
 - 修复「包开关关闭后插件仍在运行」：此前插件靠手写 cordis.patch.yml 行激活，不在 dsh.profile.bundles 里，插件页的包开关对它无效。现改为 bundles 标准激活（install 自动加入 bundles、移除手写行）：关 = 移出 bundles → 行卸载 → 约 6.5 秒内变灰；开 = 追加 → 恢复。
