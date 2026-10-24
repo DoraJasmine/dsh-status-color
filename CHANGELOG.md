@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1 (2026-10-24)
+
+- 修复插件卡片不显示配置表单的问题：设置表单只渲染 volatile 字段（dsh-context/git-graph 同款机制），Config 改为扁平全 volatile 结构并经 Schema.prototype.i18n 提供中英字段标签。
+- 配置 RPC 把扁平的行配置键映射回客户端嵌套结构；config.json 兜底不变。
+- README 按 dsh-bottom-info-bar / dsh-context 的模板重写：安装改为 DSH 插件页「添加插件」（npm 包名或 GitHub 地址）为主。
+
 ## 0.2.0 (2026-10-24)
 
 - 新增 DSH 设置页配置：导出 schemastery Config schema，宿主自动生成表单——阈值/颜色/加粗可改、分档可增删、指标可开关、refreshMs 可调；修改后约 5 秒内自动生效。
