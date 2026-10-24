@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "refreshMs": 5000,
+  "speed": {
+    "enabled": true,
+    "bands": [
+      { "min": 70, "color": "#3ecf8e", "bold": true },
+      { "min": 40, "color": "#f5b944", "bold": true }
+    ],
+    "fallback": { "color": "#ff6b57", "bold": true }
+  },
+  "cacheHit": {
+    "enabled": true,
+    "bands": [
+      { "min": 80, "color": "#3ecf8e", "bold": true },
+      { "min": 50, "color": "#f5b944", "bold": true }
+    ],
+    "fallback": { "color": "#ff6b57", "bold": true }
+  }
+}

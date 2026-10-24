@@ -1,0 +1,53 @@
+{
+  "name": "dsh-status-color",
+  "version": "0.1.0",
+  "description": "Colorizes the composer status pills in DeepSeek Harness: tok/s speed and cache-hit rate, with fully configurable thresholds and colors.",
+  "keywords": [
+    "deepseek",
+    "deepseek-harness",
+    "dsh",
+    "plugin",
+    "status",
+    "color",
+    "token",
+    "cache"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "config.example.json",
+    "install.py",
+    "README.md",
+    "README.en.md",
+    "CHANGELOG.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DoraJasmine/dsh-status-color.git"
+  },
+  "homepage": "https://github.com/DoraJasmine/dsh-status-color#readme",
+  "bugs": {
+    "url": "https://github.com/DoraJasmine/dsh-status-color/issues"
+  },
+  "dsh": {
+    "engines": {
+      "dsh": ">=0.2.0"
+    },
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": []
+    }
+  }
+}

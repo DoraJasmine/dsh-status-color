@@ -1,0 +1,6 @@
+# dsh-status-color bundle patch: inserts the plugin row into the profile roster.
+# Row id 'status-color' is the key users may override in their profile's
+# cordis.patch.yml; row 'name' must stay the package name.
+- insert:
+    - id: status-color
+      name: 'dsh-status-color'
