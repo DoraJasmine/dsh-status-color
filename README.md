@@ -7,11 +7,11 @@
 
 阈值、颜色、加粗、开关、刷新间隔**全部可配置**，改一个 JSON 文件即可，保存后约 5 秒内自动生效，无需重启 DSH。
 
-配色分档默认值借鉴 [ByteRax/zcode-token-usage-statusbar](https://github.com/ByteRax/zcode-token-usage-statusbar)。
-
-English: see [README.en.md](README.en.md).
-
 ## 效果
+
+![输入框下方状态条上色效果](screenshots/composer-pills.png)
+
+上图为输入框下方的状态条：`89 tok/s` 命中 ≥70 档显示为绿色；缓存命中率同理分档上色。
 
 | 指标 | 分档（默认） | 颜色 |
 |---|---|---|
@@ -124,7 +124,7 @@ dsh-status-color/
 ├── lib/
 │   ├── index.js          # 宿主半边：配置 RPC
 │   └── client.js         # 客户端半边：MutationObserver 上色
-├── README.md / README.en.md
+├── README.md
 ├── CHANGELOG.md
 └── LICENSE
 ```

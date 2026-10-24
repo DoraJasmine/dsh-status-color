@@ -27,7 +27,6 @@
     "config.example.json",
     "install.py",
     "README.md",
-    "README.en.md",
     "CHANGELOG.md"
   ],
   "repository": {
