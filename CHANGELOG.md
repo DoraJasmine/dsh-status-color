@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.9 (2026-10-24)
+
+- 配置表单同时注册 `plugins.bundle.config`（key = 包名）与 `plugins.row.config`（key = 包名#行id）两个槽位：前者让表单直接出现在插件卡片第一层（对齐 dsh-context 的体验），后者保留在组件详情页。
+
 ## 0.3.8 (2026-10-24)
 
 - 行 id 从 `status-color` 改为 `dsh-status-color`（与包名一致，对齐 dsh-context 等官方系插件的惯例）：配置表单的命名空间按行 id 注册、插件卡片按包名查找，两者一致后配置表单可直接出现在插件卡片上，无需再点进组件详情。
