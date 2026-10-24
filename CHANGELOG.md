@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0 (2026-10-24)
+
+- 配置表单直接嵌进插件卡片：客户端向插件管理器的 `plugins.row.config` 槽位注册表单组件（`key = 包名#行id`，槽位挂载方式参照 dsh-context），卡片出现「配置」区。
+- 表单支持取色器 + 文本双输入的颜色、阈值/加粗/开关/刷新间隔编辑，改动防抖自动保存（新增 `setConfig` RPC，写回 `config.json`），状态条约 5 秒内生效。
+- 说明：插件卡片的配置区由槽位贡献驱动（账本即槽位 key 集合），仅导出 schemastery Config 不会生成表单；Config 导出保留作兼容。
+
 ## 0.2.1 (2026-10-24)
 
 - 修复插件卡片不显示配置表单的问题：设置表单只渲染 volatile 字段（dsh-context/git-graph 同款机制），Config 改为扁平全 volatile 结构并经 Schema.prototype.i18n 提供中英字段标签。
